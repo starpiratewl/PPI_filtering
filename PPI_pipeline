@@ -12,7 +12,7 @@ library(biomaRt)
 mart <- useMart("ENSEMBL_MART_ENSEMBL", dataset = "mmusculus_gene_ensembl", host="www.ensembl.org")
 
 ################################################################
-##222look for ensemblid through gene name
+##222 look for ensemblid through gene name
 ################################################################
 
 table <- read.csv(file = "GO_genelist.txt", header = T, stringsAsFactor = F, sep = "\t")
@@ -23,9 +23,26 @@ results_genelist <- getBM(attributes = c("ensembl_gene_id", "ensembl_transcript_
 
 
 
+################################################################
+##333 get the ensemblid needed
+################################################################
+
+feikong_related <- results_genelist[results_genelist$ensembl_peptide_id != "",]
+
+
+write.table(feikong_related, file = "gene_pepid_list.txt")
+write.table(feikong_related$ensembl_peptide_id, file = "pepid_related_list.txt", row.names = F, col.names = F)
 
 
 
+
+################################################################
+##444 grep in linux
+################################################################
+
+## linkbase.txt is the file containing all the PPI relations downloaded from STRING.
+
+while read pep;do grep -w $pep linkbase.txt;done > gene_pep_filtered_links.txt < pepid_related_list.txt
 
 
 
