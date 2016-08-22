@@ -33,14 +33,29 @@ feikong_related <- results_genelist[results_genelist$ensembl_peptide_id != "",]
 write.table(feikong_related, file = "gene_pepid_list.txt")
 write.table(feikong_related$ensembl_peptide_id, file = "pepid_related_list.txt", row.names = F, col.names = F)
 
-
+## don't remember substitute all the "" in the file, we don't need it in the following grep performing.
 
 
 ################################################################
 ##444 grep in linux
 ################################################################
-
+## this step can be done with R in windows, but in linux it is much more efficient.
 ## linkbase.txt is the file containing all the PPI relations downloaded from STRING.
+
+## Dos2Unix installation
+## Download from http://linux.softpedia.com/get/Utilities/Dos2Unix-5519.shtml
+## cd /home/star/Downloads
+## tar -zxf hd2u-1.0.0.tgz
+## cd hd2u-1.0.0
+## ./configure
+##
+## yum install gcc
+## 
+
+
+## make the linux can read the file from windows
+dos2unix linkbase.txt
+dos2unix pepid_related_list.txt
 
 while read pep;do grep -w $pep linkbase.txt;done > gene_pep_filtered_links.txt < pepid_related_list.txt
 
