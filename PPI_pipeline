@@ -74,6 +74,7 @@ dos2unix pepid_related_list.txt
 
 while read pep;do grep -w $pep linkbase.txt;done > gene_pep_filtered_links.txt < pepid_related_list.txt
 
+## copy this file back to windows for further analysis in cytoscape
 
 
 
