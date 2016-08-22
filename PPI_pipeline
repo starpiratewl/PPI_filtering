@@ -1,0 +1,12 @@
+setwd("D:\\importantbk\\working\\lab_working\\QIAN\\zhou\\20160819_PPI")
+
+################################################################
+##111 load the biomaRt
+################################################################
+library(biomaRt)
+
+## define biomart object
+## 1,biomart have changed a lot in the past few months. first we need add host="www.ensembl.org here to indicate the host site.
+## 2,listMarts(host = "www.ensembl.org") can tell us the name of the database, we choose the "ENSEMBL_MART_ENSEMBL" here.
+
+mart <- useMart("ENSEMBL_MART_ENSEMBL", dataset = "mmusculus_gene_ensembl", host="www.ensembl.org")
