@@ -61,6 +61,12 @@ write.table(feikong_related$ensembl_peptide_id, file = "pepid_related_list.txt",
 ## http://rpm.pbone.net/index.php3/stat/4/idpl/17960519/dir/other/com/popt-1.14-2rt.x86_64.rpm.html download popt-1.14-2rt.x86_64.rpm
 ## cd /home/star/Downloads
 ## rpm  -ivh popt-1.14-2rt.x86_64.rpm
+## file /usr/share/locale/cs/LC_MESSAGES/popt.mo from install of popt-1.14-2rt.x86_64 conflicts with file from package popt-1.13-7.el6.x86_64
+## seem to enter an impasse
+## actually install dos2unix is very easy in CentOS
+## yum install dos2unix
+## reference link:http://gagarin.blog.51cto.com/1056957/1549791/
+
 
 ## make the linux can read the file from windows
 dos2unix linkbase.txt
