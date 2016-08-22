@@ -55,7 +55,12 @@ write.table(feikong_related$ensembl_peptide_id, file = "pepid_related_list.txt",
 ##
 ## yum install gcc
 ## 
-
+## ./configure
+## configure: error: *** libpopt not found
+##
+## http://rpm.pbone.net/index.php3/stat/4/idpl/17960519/dir/other/com/popt-1.14-2rt.x86_64.rpm.html download popt-1.14-2rt.x86_64.rpm
+## cd /home/star/Downloads
+## rpm  -ivh popt-1.14-2rt.x86_64.rpm
 
 ## make the linux can read the file from windows
 dos2unix linkbase.txt
