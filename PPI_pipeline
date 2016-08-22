@@ -78,5 +78,30 @@ while read pep;do grep -w $pep linkbase.txt;done > gene_pep_filtered_links.txt <
 
 
 
+################################################################
+##555 trim the relations
+################################################################
+
+
+result_links <- read.table(file = "gene_pep_filtered_links.txt", header = F, stringsAsFactor = F)
+
+nonre1 <- unique(as.character(factor(result_links [,1])))
+nonre2 <- unique(as.character(factor(result_links [,2])))
+
+nonre <- c(nonre1 , nonre2 )
+
+write.table(nonre , file ="nonredundant_id.txt", row.names = F, col.names = F)
+
+
+
+results_id <- getBM(attributes = c("ensembl_gene_id", "ensembl_transcript_id", "ensembl_peptide_id","external_gene_name"),filters = "ensembl_peptide_id", nonre , mart = mart)
+
+
+
+
+
+
+
+
 
 
