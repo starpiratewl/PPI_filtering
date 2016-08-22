@@ -48,6 +48,10 @@ write.table(feikong_related$ensembl_peptide_id, file = "pepid_related_list.txt",
 ## tar -zxf hd2u-1.0.0.tgz
 ## cd hd2u-1.0.0
 ## ./configure
+## checking for gcc... no
+## checking for cc... no
+## checking for cl... no
+## configure: error: no acceptable C compoler found in $PATH
 ##
 ## yum install gcc
 ## 
