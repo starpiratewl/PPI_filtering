@@ -84,9 +84,8 @@ sed 's/9606.//g' gene_pep_filtered_links.txt filtered_table.txt
 ################################################################
 ##555 trim the relations
 ################################################################
-
-
-result_links <- read.table(file = "gene_pep_filtered_links.txt", header = F, stringsAsFactor = F)
+##"filtered_table.txt" file are generated in linux, so when read it, sep = "\t" is not suitable, we use sep = " " here
+result_links <- read.csv(file = "filtered_table.txt", header = F, stringsAsFactor = F, sep = " ")
 
 nonre1 <- unique(as.character(factor(result_links [,1])))
 nonre2 <- unique(as.character(factor(result_links [,2])))
@@ -99,12 +98,21 @@ write.table(nonre , file ="nonredundant_id.txt", row.names = F, col.names = F)
 
 results_id <- getBM(attributes = c("ensembl_gene_id", "ensembl_transcript_id", "ensembl_peptide_id","external_gene_name"),filters = "ensembl_peptide_id", nonre , mart = mart)
 
+mappinglist <- results_id[,c(3,4)]
+
+write.table(mappinglist, file = “mappinglist.txt", row.names = F, col.names = F)
 
 
+test1 <- merge(result_links, mappinglist, by.x = "V1", by.y = "ensembl_peptide_id", all.x = TRUE)
 
 
+test2 <- merge(test1, mappinglist, by.x = "V2", by.y = "ensembl_peptide_id", all = F)
 
+relation_table <- test2[,-c(1,2)]
 
+##by far , we translate the id relations to gene-symbol relations
 
-
+################################################################
+##555filter the relations, it is to big
+################################################################
 
