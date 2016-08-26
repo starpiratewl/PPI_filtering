@@ -115,25 +115,28 @@ relation_table <- test2[,-c(1,2)]
 ################################################################
 ##555filter the relations, it is to big
 ################################################################
+##the relation table has duplications, for example, in PPI relation tables, we consider A-B and B-A are duplications
+relation_table_f <- relation_table[duplicated(apply(cbind(relation_table$external_gene_name.x, relation_table$external_gene_name.y), 1, function(x) paste(min(x), max(x)))),]
 
- relation_table_f <- relation_table[duplicated(apply(cbind(relation_table$external_gene_name.x, relation_table$external_gene_name.y), 1, function(x) paste(min(x), max(x)))),]
- 
- > dim(relation_table_f)
+> dim(relation_table_f)
 [1] 150621     10
 
 > dim(relation_table)
 [1] 291006     10
 
+## unique the tables
 relation_table_f_u <- unique(relation_table_f)
 
 > dim(relation_table_f_u)
 [1] 146857     10
 
+##there are NAs in the gene symbol list
 > length(relation_table_f_u$external_gene_name.x[relation_table_f_u$external_gene_name.x == "NA"])
 [1] 4278
 > length(relation_table_f_u$external_gene_name.y[relation_table_f_u$external_gene_name.y == "NA"])
 [1] 0
 
+## filter the NAs
 > relation_table_f_u_non <- relation_table_f_u[!is.na(relation_table_f_u$external_gene_name.x),]
 > dim(relation_table_f_u_non)
 [1] 142579     10
@@ -141,3 +144,12 @@ relation_table_f_u <- unique(relation_table_f)
 write.table(relation_table_f_u_non, file = "clean.txt", sep = "\t", col.names = T, row.names = F)
 
 
+
+##genelist is the genes we want to confine to.
+## this step will filter the relation of genes confined to our genelist.(both genes are in our genelist)
+for (i in 1:length(relation_table_f_u_non[,1])){if (relation_table_f_u_non[i,9] %in% genelist == "TRUE" || relation_table_f_u_non [i,10] %in% genelist == "TRUE")  {relation_table_f_u_non[i,11] <- "one"}}
+for (i in 1:length(relation_table_f_u_non[,1])){if (relation_table_f_u_non[i,9] %in% genelist == "TRUE" && relation_table_f_u_non [i,10] %in% genelist == "TRUE")  {relation_table_f_u_non[i,11] <- "T"}}
+
+clean_tab <- relation_table_f_u_non[relation_table_f_u_non$V11 == "T",]
+
+write.table(clean_tab, file = "clean_tab.txt", sep ="\t", col.names = T, row.names = F)
