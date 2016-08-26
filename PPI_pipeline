@@ -1,4 +1,5 @@
 setwd("D:\\importantbk\\working\\lab_working\\QIAN\\zhou\\20160819_PPI")
+##setwd("D:\\importantbk\\working\\lab_working\\QIAN\\zhou\\20160819_PPI")
 
 ################################################################
 ##111 load the biomaRt
@@ -20,7 +21,23 @@ table <- read.csv(file = "GO_genelist.txt", header = F, stringsAsFactor = F, sep
 genelist <- table$V1
 
 results_genelist <- getBM(attributes = c("ensembl_gene_id", "ensembl_transcript_id", "ensembl_peptide_id","external_gene_name"),filters = "external_gene_name", genelist, mart = mart)
+################################################################
+#### most of the times we need sort from an expression table
+################################################################
 
+##exp_tab <- read.csv(file = "filtered_expression_up2down1.txt", stringsAsFactor = F, sep = "\t")
+
+#### according to past experience, a map with no more than 200 genes in a PPI map is  the best for visiual effect. So we filter the gene expression table according to that rule.
+
+##> exp_tab_f <- exp_tab[exp_tab$foldchange > 8 | exp_tab$foldchange < 0.125,]
+##> dim(exp_tab_f)
+##[1] 217   5
+
+## 217 genes may probably good for further working, we will take this
+
+genelist <- exp_tab_f$GeneSymbol
+
+results_genelist <- getBM(attributes = c("ensembl_gene_id", "ensembl_transcript_id", "ensembl_peptide_id","external_gene_name"),filters = "external_gene_name", genelist, mart = mart)
 
 
 ################################################################
@@ -118,28 +135,28 @@ relation_table <- test2[,-c(1,2)]
 ##the relation table has duplications, for example, in PPI relation tables, we consider A-B and B-A are duplications
 relation_table_f <- relation_table[duplicated(apply(cbind(relation_table$external_gene_name.x, relation_table$external_gene_name.y), 1, function(x) paste(min(x), max(x)))),]
 
-> dim(relation_table_f)
-[1] 150621     10
+##> dim(relation_table_f)
+##[1] 150621     10
 
-> dim(relation_table)
-[1] 291006     10
+##> dim(relation_table)
+##[1] 291006     10
 
 ## unique the tables
 relation_table_f_u <- unique(relation_table_f)
 
-> dim(relation_table_f_u)
-[1] 146857     10
+##> dim(relation_table_f_u)
+##[1] 146857     10
 
 ##there are NAs in the gene symbol list
-> length(relation_table_f_u$external_gene_name.x[relation_table_f_u$external_gene_name.x == "NA"])
-[1] 4278
-> length(relation_table_f_u$external_gene_name.y[relation_table_f_u$external_gene_name.y == "NA"])
-[1] 0
+##> length(relation_table_f_u$external_gene_name.x[relation_table_f_u$external_gene_name.x == "NA"])
+##[1] 4278
+##> length(relation_table_f_u$external_gene_name.y[relation_table_f_u$external_gene_name.y == "NA"])
+##[1] 0
 
 ## filter the NAs
-> relation_table_f_u_non <- relation_table_f_u[!is.na(relation_table_f_u$external_gene_name.x),]
-> dim(relation_table_f_u_non)
-[1] 142579     10
+relation_table_f_u_non <- relation_table_f_u[!is.na(relation_table_f_u$external_gene_name.x),]
+##> dim(relation_table_f_u_non)
+##[1] 142579     10
 
 write.table(relation_table_f_u_non, file = "clean.txt", sep = "\t", col.names = T, row.names = F)
 
