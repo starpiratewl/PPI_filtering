@@ -116,3 +116,28 @@ relation_table <- test2[,-c(1,2)]
 ##555filter the relations, it is to big
 ################################################################
 
+ relation_table_f <- relation_table[duplicated(apply(cbind(relation_table$external_gene_name.x, relation_table$external_gene_name.y), 1, function(x) paste(min(x), max(x)))),]
+ 
+ > dim(relation_table_f)
+[1] 150621     10
+
+> dim(relation_table)
+[1] 291006     10
+
+relation_table_f_u <- unique(relation_table_f)
+
+> dim(relation_table_f_u)
+[1] 146857     10
+
+> length(relation_table_f_u$external_gene_name.x[relation_table_f_u$external_gene_name.x == "NA"])
+[1] 4278
+> length(relation_table_f_u$external_gene_name.y[relation_table_f_u$external_gene_name.y == "NA"])
+[1] 0
+
+> relation_table_f_u_non <- relation_table_f_u[!is.na(relation_table_f_u$external_gene_name.x),]
+> dim(relation_table_f_u_non)
+[1] 142579     10
+
+write.table(relation_table_f_u_non, file = "clean.txt", sep = "\t", col.names = T, row.names = F)
+
+
