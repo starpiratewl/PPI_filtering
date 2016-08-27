@@ -194,13 +194,13 @@ dim(re_tab)[1]
 
 ## number of connections of each nod
 
-number <- rep(NA, 145)
+number <- rep(NA, length(union(unique(re_tab[,9]),unique(re_tab[,10]))))
 
 con_tab <- cbind(union(unique(re_tab[,9]),unique(re_tab[,10])), number)
 
 genes <- union(unique(re_tab[,9]),unique(re_tab[,10]))
 
-for (i in 1:145){
+for (i in 1:length(union(unique(re_tab[,9]),unique(re_tab[,10])))){
 	con_tab[i,2] <- length(which(re_tab[,9] == con_tab[i,1])) + length(which(re_tab[,10] == con_tab[i,1]))
 }
 
@@ -209,9 +209,14 @@ write.table(con_tab, file = "number_of_nods.txt", quote = F, col.names = F, row.
 
 #### 2 , incorporate expression levels of each node(each gene)
 
+## add head of the the con_tab(GeneSymbol, counts)
+
+deco_tab <- read.csv(file = "number_of_nods.txt", sep = "\t", stringsAsFactor = F)
+
+exp_tab <- read.csv(file = "filtered_expression_up2down1.txt", stringsAsFactor = F, sep = "\t")
 
 
+test1 <- merge(deco_tab,exp_tab, by.x = "GeneSymbol", by.y = "GeneSymbol", all.x = TRUE)
 
-
-
+write.table(test1, file = "decoration_tables.txt", col.names = T, row.names = F)
 
