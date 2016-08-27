@@ -130,7 +130,7 @@ relation_table <- test2[,-c(1,2)]
 ##by far , we translate the id relations to gene-symbol relations
 
 ################################################################
-##555filter the relations, it is to big
+##666filter the relations, it is to big
 ################################################################
 ##the relation table has duplications, for example, in PPI relation tables, we consider A-B and B-A are duplications
 relation_table_f <- relation_table[duplicated(apply(cbind(relation_table$external_gene_name.x, relation_table$external_gene_name.y), 1, function(x) paste(min(x), max(x)))),]
@@ -170,3 +170,21 @@ for (i in 1:length(relation_table_f_u_non[,1])){if (relation_table_f_u_non[i,9] 
 clean_tab <- relation_table_f_u_non[relation_table_f_u_non$V11 == "T",]
 
 write.table(clean_tab, file = "clean_tab.txt", sep ="\t", col.names = T, row.names = F)
+
+
+
+
+
+################################################################
+##777 make the decoration data table for cytoscape
+################################################################
+
+
+
+
+
+
+
+
+
+
