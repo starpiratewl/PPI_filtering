@@ -179,8 +179,35 @@ write.table(clean_tab, file = "clean_tab.txt", sep ="\t", col.names = T, row.nam
 ##777 make the decoration data table for cytoscape
 ################################################################
 
+#### 1 , count the number of edges of each node
+
+setwd("D:\\importantbk\\working\\lab_working\\QIAN\\zhou\\20160819_PPI\\exp_tab")
+
+re_tab <- read.csv(file = "clean_test.txt", sep = "\t", stringsAsFactor = F)
 
 
+## number of nods
+length(union(unique(re_tab[,9]),unique(re_tab[,10])))
+
+## number of connections overall
+dim(re_tab)[1]
+
+## number of connections of each nod
+
+number <- rep(NA, 145)
+
+con_tab <- cbind(union(unique(re_tab[,9]),unique(re_tab[,10])), number)
+
+genes <- union(unique(re_tab[,9]),unique(re_tab[,10]))
+
+for (i in 1:145){
+	con_tab[i,2] <- length(which(re_tab[,9] == con_tab[i,1])) + length(which(re_tab[,10] == con_tab[i,1]))
+}
+
+write.table(con_tab, file = "number_of_nods.txt", quote = F, col.names = F, row.names = F, sep = "\t")
+
+
+#### 2 , incorporate expression levels of each node(each gene)
 
 
 
