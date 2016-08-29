@@ -1,0 +1,70 @@
+setwd("D:\\importantbk\\working\\lab_working\\QIAN\\zhou\\20160829_tab_preparation")
+
+exp_tab <- read.csv(file = "TE_1_16_Gy_VS_TE_1_fc3.txt", sep = "\t", stringsAsFactor = F)
+
+##> dim(exp_tab)
+##[1] 6611   24
+
+cexp_tab <- exp_tab[,c(1,2,4,6,12)]
+
+##> dim(cexp_tab)
+##[1] 6611    5
+##> head(cexp_tab)
+##         ProbeName TE_1_16_Gy_NS   TE_1_NS  foldchange GeneSymbol
+##1 LNCA_33_P3373715      6.378538  8.853032  0.17992976       <NA>
+##2  LNCA_23_P200780      6.116769  9.278699  0.11172859     TGFBR3
+##3  LNCA_23_P393645      5.743641 10.589168  0.03478172   ADAMTS13
+##4 LNCA_33_P3303212      2.636221  6.824911  0.05483764    CCDC74B
+##5   LNCA_23_P34597      9.188693 11.233832  0.24229911        CDA
+##6  LNCA_23_P253350      6.585123  2.741680 14.35461667     C8orf4
+
+
+
+oeight_tab <- cexp_tab[cexp_tab$foldchange >= 8 | cexp_tab$foldchange <= 0.125,]
+
+oeight_tab <- oeight_tab[!is.na(oeight_tab$GeneSymbol),]
+
+##> dim(oeight_tab)
+##[1] 2023    5
+
+##rnames <- names(table(oeight_tab$GeneSymbol)[table(oeight_tab$GeneSymbol) == 2 | table(oeight_tab$GeneSymbol) == 3 |table(oeight_tab$GeneSymbol) == 4])
+
+rnames <- names(table(oeight_tab$GeneSymbol)[table(oeight_tab$GeneSymbol) >= 2])
+
+## return the index of particular value in a table
+which(oeight_tab == "CSF3",arr.ind = TRUE)
+
+
+## if else should be written like following . If else is setted in another line, it may pop out an error
+## please attention here, cc[-1,] will not alter cc at all it only return a object the same as a but with first line deleted
+
+for (i in rnames){
+	if (min(oeight_tab[oeight_tab$GeneSymbol == i, ]$foldchange) > 1) {oeight_tab <- oeight_tab[-c(which(oeight_tab$GeneSymbol == i)[which(oeight_tab[which(oeight_tab$GeneSymbol == i),]$foldchange != max(oeight_tab[which(oeight_tab$GeneSymbol == i),]$foldchange))]),]} else 
+	 {oeight_tab <- oeight_tab[-c(which(oeight_tab$GeneSymbol == i)[which(oeight_tab[which(oeight_tab$GeneSymbol == i),]$foldchange != min(oeight_tab[which(oeight_tab$GeneSymbol == i),]$foldchange))])
+,]}
+}
+
+##> dim(oeight_tab)
+##[1] 1792    5
+
+
+##> rnames2 <- names(table(oeight_tab$GeneSymbol)[table(oeight_tab$GeneSymbol) >= 2])
+##> rnames2
+##character(0)
+## It means that there is no more redundant values in the expression table.
+
+
+write.table(oeight_tab, file = "TE1_filtered_expression_up8down3.txt", quote = F, col.names = T, row.names = F, sep = "\t")
+
+
+
+
+
+
+
+
+
+
+
+
+
