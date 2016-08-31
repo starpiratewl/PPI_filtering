@@ -39,6 +39,22 @@ genelist <- exp_tab_f$GeneSymbol
 
 results_genelist <- getBM(attributes = c("ensembl_gene_id", "ensembl_transcript_id", "ensembl_peptide_id","external_gene_name"),filters = "external_gene_name", genelist, mart = mart)
 
+###############
+## abnormal
+###############
+## sometimes in the genelist there will genenames like "6-九月", this will call error in getBM like following:
+Error in getBM(attributes = c("ensembl_gene_id", "ensembl_transcript_id",  : 
+  Query ERROR: caught BioMart::Exception: non-BioMart die(): 
+not well-formed (invalid token) at line 1, column 6260, byte 6260 at /localsw/lib/perl5/site_perl/5.14.2/x86_64-linux-thread-multi/XML/Parser.pm line 187.
+
+## to see how many cases like this:
+grep("月"，genelist)
+
+## filter out these abnormal like these:
+genelist <- genelist[-(grep("月",genelist))]
+
+## run the getBM again
+
 
 ################################################################
 ##333 get the ensemblid needed
