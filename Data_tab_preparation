@@ -58,8 +58,27 @@ write.table(oeight_tab, file = "TE1_filtered_expression_up8down3.txt", quote = F
 
 
 
+#####################################################################################################################################################################################################
+## sometimes the exp table is just to big that we can not get the proper differentiated expression table by setting foldchange threshold, so we have to select by top and down rank list.
+#####################################################################################################################################################################################################
 
 
+##################################################
+## to get familiar with order()  sort()   rank()
+##################################################
+
+> x<-c(97,93,85,74,32,100,99,67)
+## ordered the vector
+> sort(x)
+[1]  32  67  74  85  93  97  99 100
+
+## find the index of each element of theseq of the result of the sort() in the raw vector
+> order(x)
+[1] 5 8 4 3 2 1 7 6
+
+## give the index of each element of the raw vector in the the seq of the result of the sort()
+> rank(x)
+[1] 6 5 4 3 1 8 7 2
 
 
 
