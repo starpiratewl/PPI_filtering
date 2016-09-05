@@ -81,7 +81,48 @@ write.table(oeight_tab, file = "TE1_filtered_expression_up8down3.txt", quote = F
 [1] 6 5 4 3 1 8 7 2
 
 
+sort_table <- cexp_tab[order(cexp_tab$foldchange),]
 
+top_150 <- head(sort_table,150)
+
+tail_150 <- tail(sort_table,150)
+
+oeight_tab <- rbind(top_150, tail_150)
+
+
+oeight_tab <- oeight_tab[!is.na(oeight_tab$GeneSymbol),]
+
+##> dim(oeight_tab)
+##[1] 2023    5
+
+##rnames <- names(table(oeight_tab$GeneSymbol)[table(oeight_tab$GeneSymbol) == 2 | table(oeight_tab$GeneSymbol) == 3 |table(oeight_tab$GeneSymbol) == 4])
+
+rnames <- names(table(oeight_tab$GeneSymbol)[table(oeight_tab$GeneSymbol) >= 2])
+
+## return the index of particular value in a table
+which(oeight_tab == "CSF3",arr.ind = TRUE)
+
+
+## if else should be written like following . If else is setted in another line, it may pop out an error
+## please attention here, cc[-1,] will not alter cc at all it only return a object the same as a but with first line deleted
+
+for (i in rnames){
+	if (min(oeight_tab[oeight_tab$GeneSymbol == i, ]$foldchange) > 1) {oeight_tab <- oeight_tab[-c(which(oeight_tab$GeneSymbol == i)[which(oeight_tab[which(oeight_tab$GeneSymbol == i),]$foldchange != max(oeight_tab[which(oeight_tab$GeneSymbol == i),]$foldchange))]),]} else 
+	 {oeight_tab <- oeight_tab[-c(which(oeight_tab$GeneSymbol == i)[which(oeight_tab[which(oeight_tab$GeneSymbol == i),]$foldchange != min(oeight_tab[which(oeight_tab$GeneSymbol == i),]$foldchange))])
+,]}
+}
+
+##> dim(oeight_tab)
+##[1] 1792    5
+
+
+##> rnames2 <- names(table(oeight_tab$GeneSymbol)[table(oeight_tab$GeneSymbol) >= 2])
+##> rnames2
+##character(0)
+## It means that there is no more redundant values in the expression table.
+
+
+write.table(oeight_tab, file = "TE1_filtered_expression_toptail.txt", quote = F, col.names = T, row.names = F, sep = "\t")
 
 
 
