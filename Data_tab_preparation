@@ -80,6 +80,9 @@ write.table(oeight_tab, file = "TE1_filtered_expression_up8down3.txt", quote = F
 > rank(x)
 [1] 6 5 4 3 1 8 7 2
 
+## notice the following performance, it will sort the dataframe by two columns, first sort the "data" according to the "class" variable, and in each cohort of the "class", it will sort the subset of the "data" by the "height" variable, it will be useful in some cases.
+##data[order(data$class,data$height),]
+
 
 sort_table <- cexp_tab[order(cexp_tab$foldchange),]
 
