@@ -1,21 +1,115 @@
-setwd("")
+setwd("D:\\importantbk\\refernce_material\\summary\\important_BK\\My_work\\LncRNA\\Lnc_prediction")
+
+setwd("./TCGA_prediction")
+
+celllines <- read.csv(file = "celllines.txt", header = F, sep = "\t", stringsAsFactors = F)
+
+casespre <- read.csv(file = "cases.txt", sep = "\t", header = F, stringsAsFactors = F)
+
+tspre <- read.csv(file = "TargetScan7.1__miR-128-3p.predicted_targets.txt", sep = "\t", stringsAsFactors = F)
+
+genelist <- c(celllines$V3, casespre$V3, tspre$Ortholog.of.target.gene)
+genelist <- unique(genelist)
+
+
+library(biomaRt)
+mart <- useMart("ENSEMBL_MART_ENSEMBL", dataset = "hsapiens_gene_ensembl", host="www.ensembl.org")
+
+results_genelist <- getBM(attributes = c("ensembl_gene_id", "ensembl_transcript_id", "ensembl_peptide_id","external_gene_name"),filters = "external_gene_name", genelist, mart = mart)
+
+
+
+feikong_related <- results_genelist[results_genelist$ensembl_peptide_id != "",]
+
+
+write.table(feikong_related, file = "gene_pepid_list.txt", quote = F,row.names = F)
+write.table(feikong_related$ensembl_peptide_id, file = "pepid_related_list.txt", row.names = F, col.names = F, quote = F)
+
+
+
+
+result_links <- read.csv(file = "filtered_table.txt", header = F, stringsAsFactor = F, sep = " ")
+
+nonre1 <- unique(as.character(factor(result_links [,1])))
+nonre2 <- unique(as.character(factor(result_links [,2])))
+
+nonre <- c(nonre1 , nonre2 )
+
+write.table(nonre , file ="nonredundant_id.txt", row.names = F, col.names = F)
+
+## nonre <- read.table(file = "nonredundant_id.txt", header = F, stringsAsFactor = F)$V1
+
+results_id <- getBM(attributes = c("ensembl_gene_id", "ensembl_transcript_id", "ensembl_peptide_id","external_gene_name"),filters = "ensembl_peptide_id", nonre , mart = mart)
+
+mappinglist <- results_id[,c(3,4)]
+
+write.table(mappinglist, file = "mappinglist.txt", row.names = F, col.names = F)
+
+
+test1 <- merge(result_links, mappinglist, by.x = "V1", by.y = "ensembl_peptide_id", all.x = TRUE)
+
+
+test2 <- merge(test1, mappinglist, by.x = "V2", by.y = "ensembl_peptide_id", all = F)
+
+relation_table <- test2[,-c(1,2)]
+
+##by far , we translate the id relations to gene-symbol relations
+
+
+
+
+##the relation table has duplications, for example, in PPI relation tables, we consider A-B and B-A are duplications
+relation_table_f <- relation_table[duplicated(apply(cbind(relation_table$external_gene_name.x, relation_table$external_gene_name.y), 1, function(x) paste(min(x), max(x)))),]
+
+##> dim(relation_table_f)
+##[1] 150621     10
+
+##> dim(relation_table)
+##[1] 291006     10
+
+## unique the tables
+relation_table_f_u <- unique(relation_table_f)
+
+##> dim(relation_table_f_u)
+##[1] 146857     10
+
+##there are NAs in the gene symbol list
+##> length(relation_table_f_u$external_gene_name.x[relation_table_f_u$external_gene_name.x == "NA"])
+##[1] 4278
+##> length(relation_table_f_u$external_gene_name.y[relation_table_f_u$external_gene_name.y == "NA"])
+##[1] 0
+
+## filter the NAs
+relation_table_f_u_non <- relation_table_f_u[!is.na(relation_table_f_u$external_gene_name.x),]
+##> dim(relation_table_f_u_non)
+##[1] 142579     10
+
+write.table(relation_table_f_u_non, file = "clean.txt", sep = "\t", col.names = T, row.names = F)
+
+
+
+##genelist is the genes we want to confine to.
+## this step will filter the relation of genes confined to our genelist.(both genes are in our genelist)
+for (i in 1:length(relation_table_f_u_non[,1])){if (relation_table_f_u_non[i,9] %in% genelist == "TRUE" || relation_table_f_u_non [i,10] %in% genelist == "TRUE")  {relation_table_f_u_non[i,11] <- "one"}}
+for (i in 1:length(relation_table_f_u_non[,1])){if (relation_table_f_u_non[i,9] %in% genelist == "TRUE" && relation_table_f_u_non [i,10] %in% genelist == "TRUE")  {relation_table_f_u_non[i,11] <- "T"}}
+
+clean_tab <- relation_table_f_u_non[relation_table_f_u_non$V11 == "T",]
+
+write.table(clean_tab, file = "clean_tab.txt", sep ="\t", col.names = T, row.names = F)
 
 
 
 
 
 
+##genelist is the genes we want to confine to.
+## this step will filter the relation of genes confined to our genelist.(both genes are in our genelist)
+for (i in 1:length(relation_table_f_u_non[,1])){if (relation_table_f_u_non[i,9] %in% genelist == "TRUE" || relation_table_f_u_non [i,10] %in% genelist == "TRUE")  {relation_table_f_u_non[i,11] <- "one"}}
+for (i in 1:length(relation_table_f_u_non[,1])){if (relation_table_f_u_non[i,9] %in% genelist == "TRUE" && relation_table_f_u_non [i,10] %in% genelist == "TRUE")  {relation_table_f_u_non[i,11] <- "T"}}
 
+clean_tab <- relation_table_f_u_non[relation_table_f_u_non$V11 == "T",]
 
-
-
-
-
-
-
-
-
-
+write.table(clean_tab, file = "clean_tab.txt", sep ="\t", col.names = T, row.names = F)
 
 
 
