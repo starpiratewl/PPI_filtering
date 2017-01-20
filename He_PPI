@@ -7,8 +7,9 @@ celllines <- read.csv(file = "celllines.txt", header = F, sep = "\t", stringsAsF
 casespre <- read.csv(file = "cases.txt", sep = "\t", header = F, stringsAsFactors = F)
 
 tspre <- read.csv(file = "TargetScan7.1__miR-128-3p.predicted_targets.txt", sep = "\t", stringsAsFactors = F)
+tsprehaha <- tspre[tspre$Total.context...score <= -0.32,]
 
-genelist <- c(celllines$V3, casespre$V3, tspre$Ortholog.of.target.gene)
+genelist <- c(celllines$V3, casespre$V3, tsprehaha$Ortholog.of.target.gene)
 genelist <- unique(genelist)
 
 
@@ -94,12 +95,21 @@ for (i in 1:length(relation_table_f_u_non[,1])){if (relation_table_f_u_non[i,9] 
 
 clean_tab <- relation_table_f_u_non[relation_table_f_u_non$V11 == "T",]
 
+clean_tab_f <- clean_tab[duplicated(apply(cbind(clean_tab$external_gene_name.x, clean_tab$external_gene_name.y), 1, function(x) paste(min(x), max(x)))),]
+
 write.table(clean_tab, file = "clean_tab.txt", sep ="\t", col.names = T, row.names = F, quote = F)
 
+write.table(clean_tab_f, file = "clean_tab_f.txt", sep ="\t", col.names = T, row.names = F, quote = F)
 
 
 
+final_genes <- unique(c(clean_tab_f$external_gene_name.x, clean_tab_f$external_gene_name.y))
 
+lncrnaT <- intersect(final_genes, c(celllines$V3, casespre$V3)) 
+write.table(lncrnaT, file = "lncRNA_target.txt", sep = "\t", col.names = F, row.names = F, quote = F)
+
+mir128T <- intersect(final_genes, tsprehaha$Ortholog.of.target.gene) 
+write.table(mir128T, file = "mir128_target.txt", sep = "\t", col.names = F, row.names = F, quote = F)
 
 
 
