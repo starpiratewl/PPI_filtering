@@ -18,11 +18,10 @@ mart <- useMart("ENSEMBL_MART_ENSEMBL", dataset = "hsapiens_gene_ensembl", host=
 results_genelist <- getBM(attributes = c("ensembl_gene_id", "ensembl_transcript_id", "ensembl_peptide_id","external_gene_name"),filters = "external_gene_name", genelist, mart = mart)
 
 
-
 feikong_related <- results_genelist[results_genelist$ensembl_peptide_id != "",]
 
 
-write.table(feikong_related, file = "gene_pepid_list.txt", quote = F,row.names = F)
+write.table(feikong_related, file = "gene_pepid_list.txt", quote = F, row.names = F)
 write.table(feikong_related$ensembl_peptide_id, file = "pepid_related_list.txt", row.names = F, col.names = F, quote = F)
 
 
@@ -35,7 +34,7 @@ nonre2 <- unique(as.character(factor(result_links [,2])))
 
 nonre <- c(nonre1 , nonre2 )
 
-write.table(nonre , file ="nonredundant_id.txt", row.names = F, col.names = F)
+write.table(nonre , file ="nonredundant_id.txt", row.names = F, col.names = F, quote = F)
 
 ## nonre <- read.table(file = "nonredundant_id.txt", header = F, stringsAsFactor = F)$V1
 
@@ -43,7 +42,7 @@ results_id <- getBM(attributes = c("ensembl_gene_id", "ensembl_transcript_id", "
 
 mappinglist <- results_id[,c(3,4)]
 
-write.table(mappinglist, file = "mappinglist.txt", row.names = F, col.names = F)
+write.table(mappinglist, file = "mappinglist.txt", row.names = F, col.names = F, quote = F)
 
 
 test1 <- merge(result_links, mappinglist, by.x = "V1", by.y = "ensembl_peptide_id", all.x = TRUE)
@@ -84,7 +83,7 @@ relation_table_f_u_non <- relation_table_f_u[!is.na(relation_table_f_u$external_
 ##> dim(relation_table_f_u_non)
 ##[1] 142579     10
 
-write.table(relation_table_f_u_non, file = "clean.txt", sep = "\t", col.names = T, row.names = F)
+write.table(relation_table_f_u_non, file = "clean.txt", sep = "\t", col.names = T, row.names = F, quote = F)
 
 
 
@@ -95,23 +94,7 @@ for (i in 1:length(relation_table_f_u_non[,1])){if (relation_table_f_u_non[i,9] 
 
 clean_tab <- relation_table_f_u_non[relation_table_f_u_non$V11 == "T",]
 
-write.table(clean_tab, file = "clean_tab.txt", sep ="\t", col.names = T, row.names = F)
-
-
-
-
-
-
-##genelist is the genes we want to confine to.
-## this step will filter the relation of genes confined to our genelist.(both genes are in our genelist)
-for (i in 1:length(relation_table_f_u_non[,1])){if (relation_table_f_u_non[i,9] %in% genelist == "TRUE" || relation_table_f_u_non [i,10] %in% genelist == "TRUE")  {relation_table_f_u_non[i,11] <- "one"}}
-for (i in 1:length(relation_table_f_u_non[,1])){if (relation_table_f_u_non[i,9] %in% genelist == "TRUE" && relation_table_f_u_non [i,10] %in% genelist == "TRUE")  {relation_table_f_u_non[i,11] <- "T"}}
-
-clean_tab <- relation_table_f_u_non[relation_table_f_u_non$V11 == "T",]
-
-write.table(clean_tab, file = "clean_tab.txt", sep ="\t", col.names = T, row.names = F)
-
-
+write.table(clean_tab, file = "clean_tab.txt", sep ="\t", col.names = T, row.names = F, quote = F)
 
 
 
