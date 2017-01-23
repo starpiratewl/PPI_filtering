@@ -125,3 +125,32 @@ write.table(naked_tab_haha, file = "final_table_y.txt", sep = "\t", col.names = 
 
 
 
+
+lncrnaT <- read.csv(file = "lncRNA_target.txt", header = F, sep = "\t", stringsAsFactor = F)
+mir128T <- read.csv(file = "mir128_target.txt", header = F, sep = "\t", stringsAsFactor = F)
+
+lncrnaT$V2 <- rep(1, length(lncrnaT$V1))
+mir128T$V2 <- rep(2, length(mir128T$V1))
+
+haha <- rbind(lncrnaT, mir128T)
+write.table(haha, file = "color_tab.txt", sep = "\t", col.names = T, row.names = F, quote = F)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
