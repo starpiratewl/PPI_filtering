@@ -250,6 +250,8 @@ write.table(con_tab, file = "number_of_nods.txt", quote = F, col.names = F, row.
 
 
 #### 2 , add mir-16
+relation_table_f_u_non <- read.csv(file = "clean.txt", sep = "\t", stringsAsFactors = F)
+
 geneintab <- unique(c(relation_table_f_u_non$external_gene_name.x, relation_table_f_u_non$external_gene_name.y))
 
 
