@@ -223,35 +223,32 @@ write.table(clean_tab, file = "clean_tab.txt", sep ="\t", col.names = T, row.nam
 
 #### 1 , count the number of edges of each node
 
-setwd("D:\\importantbk\\working\\lab_working\\QIAN\\zhou\\20160819_PPI\\exp_tab")
+setwd("D:\\wangliang\\department_trivial\\zhanxiaohong")
 
-re_tab <- read.csv(file = "clean_test.txt", sep = "\t", stringsAsFactor = F)
+clean_tab <- read.csv(file = "clean.txt", sep = "\t", stringsAsFactor = F)
 
+length(unique(c(clean_tab$external_gene_name.x, clean_tab$external_gene_name.y)))
 
-## number of nods
-length(union(unique(re_tab[,9]),unique(re_tab[,10])))
+combined_score <- rep(150, length(unique(c(clean_tab$external_gene_name.x, clean_tab$external_gene_name.y))))
+external_gene_name.x <- rep("miR-16", length(unique(c(clean_tab$external_gene_name.x, clean_tab$external_gene_name.y))))
+external_gene_name.y <- unique(c(clean_tab$external_gene_name.x, clean_tab$external_gene_name.y))
 
-## number of connections overall
-dim(re_tab)[1]
+add_tab <- cbind(combined_score, external_gene_name.x, external_gene_name.y)
 
-## number of connections of each nod
+final_tab <- rbind(clean_tab, add_tab)
 
-number <- rep(NA, length(union(unique(re_tab[,9]),unique(re_tab[,10]))))
+write.table(final_tab, file = "final_tab.txt", sep = "\t", quote = F, col.names = T, row.names = F)
 
-con_tab <- cbind(union(unique(re_tab[,9]),unique(re_tab[,10])), number)
-
-genes <- union(unique(re_tab[,9]),unique(re_tab[,10]))
-
-for (i in 1:length(union(unique(re_tab[,9]),unique(re_tab[,10])))){
-	con_tab[i,2] <- length(which(re_tab[,9] == con_tab[i,1])) + length(which(re_tab[,10] == con_tab[i,1]))
-}
-
-write.table(con_tab, file = "number_of_nods.txt", quote = F, col.names = F, row.names = F, sep = "\t")
+#######################################################################
+##substitute the "PPM1D" with "WIP1" in the final_tab.txt file
+#######################################################################
 
 
-#### 2 , add mir-16
-relation_table_f_u_non <- read.csv(file = "clean.txt", sep = "\t", stringsAsFactors = F)
 
-geneintab <- unique(c(relation_table_f_u_non$external_gene_name.x, relation_table_f_u_non$external_gene_name.y))
+
+
+
+
+
 
 
